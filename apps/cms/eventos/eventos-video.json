@@ -1,0 +1,9 @@
+[
+    {
+        "id": "evento_001",
+        "video_id": "video_001",
+        "timestamp": 180,
+        "acao": "pausar_video",
+        "topico_id": "topico_beneficios"
+    }
+]

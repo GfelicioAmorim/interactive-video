@@ -1,0 +1,7 @@
+{
+    "id": "empresa_001",
+    "nome": "Empresa Exemplo LTDA",
+    "cnpj": "00.000.000/0001-00",
+    "logo_url": "https://cdn.sit.com/logos/empresa",
+    "ativo": true
+}

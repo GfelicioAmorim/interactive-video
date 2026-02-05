@@ -1,0 +1,8 @@
+[
+    {
+        "id": "acao_001",
+        "cenario_id": "cenario_beneficios_clt",
+        "label": "continuar",
+        "tipo": "continuar"
+    }
+]
