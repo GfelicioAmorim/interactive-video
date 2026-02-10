@@ -1,13 +1,15 @@
 {
-    "id": "cenario_beneficios_clt",
-    "topico_id": "topico_beneficios",
-    "perfil_id": "perfil_clt",
-    "tipo_render": "lista",
-    "titulo_overlay": "seus beneficios como clt",
-    "texto": "voce tera acesso aos seguintes beneficios",
-    "beneficios_ids":[
-        "beneficio_001",
-        "beneficio_002"
-    ],
-    "acao_apos": "continuar_video"
+  "id": "beneficios-clt",
+  "topico_id": "beneficios",
+  "perfil_id": "clt",
+  "tipo_render": "lista",
+  "titulo_overlay": "Seus benefícios como CLT",
+  "texto": "Você terá acesso aos seguintes benefícios:",
+  "beneficios_ids": [
+    "beneficio_001",
+    "beneficio_002"
+  ],
+  "acao_apos": {
+    "tipo": "continuar_video"
+  }
 }
