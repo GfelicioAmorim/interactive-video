@@ -1,61 +1,133 @@
-const cmsService = require('../services/cms.service');
-const beneficioService = require('../services/beneficio.service');
+const mongoose = require('mongoose');
+const Cenario = require('../models/cenario.model');
 
-exports.getCenarios = (req, res) => {
+/**
+ * Criar cenário
+ */
+exports.create = async (req, res, next) => {
   try {
-    const cenarios = cmsService.getCenarios();
-    res.json(cenarios);
+    const cenario = new Cenario(req.body);
+    const saved = await cenario.save();
+
+    return res.status(201).json(saved);
   } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
+    next(error);
   }
 };
 
-exports.getCenarioById = (req, res) => {
+/**
+ * Listar todos
+ */
+exports.findAll = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const cenario = cmsService.getCenarioById(id);
+    const cenarios = await Cenario.find({ ativo: true })
+      .populate('beneficios')
+      .sort({ createdAt: -1 });
 
-    if (!cenario) {
-      return res.status(404).json({
-        error: 'Cenário não encontrado'
-      });
-    }
-
-    res.json(cenario);
+    return res.status(200).json(cenarios);
   } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
+    next(error);
   }
 };
 
-exports.getCenarioCompleto = (req, res) => {
+/**
+ * Buscar por Mongo ID
+ */
+exports.findById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const cenario = cmsService.getCenarioById(id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const cenario = await Cenario.findById(id)
+      .populate('beneficios');
 
     if (!cenario) {
-      return res.status(404).json({
-        error: 'Cenário não encontrado'
-      });
+      return res.status(404).json({ error: 'Cenário não encontrado' });
     }
 
-    let beneficios = [];
-    if (Array.isArray(cenario.beneficios_ids)) {
-      beneficios = beneficioService.getBeneficiosByIds(
-        cenario.beneficios_ids
-      );
+    return res.status(200).json(cenario);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Buscar por ID lógico (usado pelo frontend)
+ */
+exports.findByLogicalId = async (req, res, next) => {
+  try {
+    const { logicalId } = req.params;
+
+    const cenario = await Cenario.findOne({
+      id: logicalId,
+      ativo: true
+    }).populate('beneficios');
+
+    if (!cenario) {
+      return res.status(404).json({ error: 'Cenário não encontrado' });
     }
 
-    res.json({
-      ...cenario,
-      beneficios
+    return res.status(200).json(cenario);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Atualizar
+ */
+exports.update = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const updated = await Cenario.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true, runValidators: true }
+    ).populate('beneficios');
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Cenário não encontrado' });
+    }
+
+    return res.status(200).json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Remover (soft delete recomendado)
+ */
+exports.remove = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const deleted = await Cenario.findByIdAndUpdate(
+      id,
+      { ativo: false },
+      { new: true }
+    );
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Cenário não encontrado' });
+    }
+
+    return res.status(200).json({
+      message: 'Cenário desativado com sucesso'
     });
   } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
+    next(error);
   }
 };

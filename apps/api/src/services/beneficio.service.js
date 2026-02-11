@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PROJECT_ROOT = path.resolve(__dirname, '../../../../');
-const BENEFICIOS_PATH = path.join(PROJECT_ROOT, 'cms', 'beneficios');
+const BENEFICIOS_PATH = path.join(PROJECT_ROOT,'apps', 'cms', 'beneficios');
 
 function readFolder() {
   if (!fs.existsSync(BENEFICIOS_PATH)) {
